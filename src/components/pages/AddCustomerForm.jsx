@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const AddCustomerForm = () => {
     const [formData, setFormData] = useState({
@@ -10,6 +10,7 @@ const AddCustomerForm = () => {
         altMobile: '',
         dob: '',
         address: '',
+        gender: '',
         pincode: '',
         branch: '',
         documents: {
@@ -196,6 +197,29 @@ const AddCustomerForm = () => {
                                 required
                             />
                         </label>
+                        <label className="flex flex-col">
+                            <span className="mb-2 font-semibold text-gray-700">
+                                Gender <span className="text-red-600">*</span>
+                            </span>
+                            <select
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
+                                className={`border border-gray-300 rounded-lg p-3 w-full shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${formData.gender === '' ? 'text-gray-400' : 'text-gray-700'
+                                    }`}
+                                required
+                            >
+                                <option value="" disabled hidden>
+                                    Select Gender
+                                </option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+
+                        </label>
+
+
                         <label className="flex flex-col">
                             <span className="mb-2 font-semibold text-gray-700">
                                 Pincode <span className="text-red-600">*</span>

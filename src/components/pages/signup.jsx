@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Card, CardContent } from '../ui/card';
+import { Button } from './style/button';
+import { Input } from './style/input';
+import { Card, CardContent } from './style/card';
 import { Toaster, toast } from 'sonner';
 import { Eye, EyeOff, Key } from 'lucide-react';
 
-export default function SignUp() {
+function SignUp() {
     const navigate = useNavigate();
 
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [gender, setGender] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -34,6 +35,10 @@ export default function SignUp() {
             case 'email':
                 if (!value.includes('@')) error = 'Enter a valid email address.';
                 break;
+            case 'gender':
+                if (!value) error = 'Please select a gender.';
+                break;
+
             case 'phone':
                 if (!/^\d{10}$/.test(value)) error = 'Phone must be 10 digits.';
                 break;
@@ -92,6 +97,7 @@ export default function SignUp() {
         if (!fullName.trim()) newErrors.fullName = 'Full name is required.';
         if (!username.trim()) newErrors.username = 'Username is required.';
         if (!email.includes('@')) newErrors.email = 'Enter a valid email address.';
+        if (!gender) newErrors.gender = 'Please select a gender.';
         if (!/^\d{10}$/.test(phone)) newErrors.phone = 'Phone must be 10 digits.';
         const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
         if (!passwordRegex.test(password))
@@ -110,7 +116,7 @@ export default function SignUp() {
             const response = await fetch('https://your-backend-api.com/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fullName, username, email, phone, password, confirmPassword }),
+                body: JSON.stringify({ fullName, username, email, phone, gender, password, confirmPassword }),
             });
 
             const data = await response.json();
@@ -130,7 +136,7 @@ export default function SignUp() {
 
     return (
         <div className="min-h-screen  flex items-center justify-center px-4"
-         style={{ background: 'linear-gradient(to bottom, rgba(80, 180, 152, 0.1), rgba(80, 180, 152, 0.4))' }}>
+            style={{ background: 'linear-gradient(to bottom, rgba(80, 180, 152, 0.1), rgba(80, 180, 152, 0.4))' }}>
             <Toaster position="top-right" richColors />
 
             <div className="w-full max-w-3xl bg-white shadow-3xl border border-gray-200 rounded-2xl p-10">
@@ -177,6 +183,30 @@ export default function SignUp() {
                         />
                         {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
                     </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold mb-1 text-gray-700">
+                            Gender <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            value={gender}
+                            onChange={(e) => {
+                                setGender(e.target.value);
+                                validateField('gender', e.target.value);
+                            }}
+                            onBlur={(e) => validateField('gender', e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                            required
+                        >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        {errors.gender && <p className="text-sm text-red-500 mt-1">{errors.gender}</p>}
+                    </div>
+
 
                     <div>
                         <label className="block text-sm font-semibold mb-1 text-gray-700">
@@ -255,3 +285,5 @@ export default function SignUp() {
         </div>
     );
 }
+
+export default SignUp;
